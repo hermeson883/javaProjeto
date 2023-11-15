@@ -3,10 +3,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package com.mycompany.java_banco;
-
+import java.sql.Date;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -285,6 +287,43 @@ public class frame2 extends javax.swing.JFrame {
     }//GEN-LAST:event_bandeiraActionPerformed
 
     private void enviar_tabelaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enviar_tabelaActionPerformed
+        //concetando com o banco de dados
+        String url = "jdbc:mysql://localhost:3306/retifica";
+        String usuario = "root";
+        String senha = "";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(frame2.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        try {
+            Date sql_data = Date.valueOf(data.getText());
+            System.out.println(sql_data);
+            String sql_pagamento = pagamento.getText();
+            Integer sql_parcelamento = Integer.valueOf(parcelamento.getText());
+            Integer sql_valor = Integer.valueOf(valor.getText());
+            String sql_cartao = bandeira.getText();
+            Connection conexao = DriverManager.getConnection(url, usuario, senha);
+
+            PreparedStatement stm = conexao.prepareStatement("insert into cliente (dia_data, valor, valor_creditado, cartao, percentual) VALUES (?,?,?,?,?)");
+            
+            stm.setDate(1, sql_data);
+            stm.setInt(2, sql_valor);
+            stm.setInt(3, sql_parcelamento);
+            stm.setString(4, sql_cartao);
+            stm.setString(5, sql_pagamento);
+            
+            stm.executeUpdate();
+            System.out.println("Conexão bem sucedida!");
+            conexao.close();
+
+        } catch(SQLException e){
+            System.out.println("Erro ao conectar" + e);
+        }  
+         
+        // conectando com o banco de dados
+        
         DefaultTableModel dadosPagamento = (DefaultTableModel) tabela.getModel();
         
         Object[] dados = {data.getText(), pagamento.getText(), valor.getText(), bandeira.getText(), parcelamento.getText()};
@@ -299,26 +338,7 @@ public class frame2 extends javax.swing.JFrame {
             bandeira.setText("");
             parcelamento.setText("");
             
-              
-            String url = "jdbc:mysql://localhost:3306/retifica";
-            String usuario = "root";
-            String senha = "";
-            try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(frame2.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-            try {
-                Connection conexao = DriverManager.getConnection(url, usuario, senha);
-
-                System.out.println("Conexão bem sucedida!");
-                conexao.close();
-
-            } catch(SQLException e){
-                System.out.println("Erro ao conectar");
-            }  
-
+      
         }
         
     }//GEN-LAST:event_enviar_tabelaActionPerformed
