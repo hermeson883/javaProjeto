@@ -4,6 +4,11 @@
  */
 package com.mycompany.java_banco;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
@@ -293,6 +298,26 @@ public class frame2 extends javax.swing.JFrame {
             valor.setText("");
             bandeira.setText("");
             parcelamento.setText("");
+            
+              
+            String url = "jdbc:mysql://localhost:3306/retifica";
+            String usuario = "root";
+            String senha = "";
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(frame2.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            try {
+                Connection conexao = DriverManager.getConnection(url, usuario, senha);
+
+                System.out.println("Conexão bem sucedida!");
+                conexao.close();
+
+            } catch(SQLException e){
+                System.out.println("Erro ao conectar");
+            }  
 
         }
         
